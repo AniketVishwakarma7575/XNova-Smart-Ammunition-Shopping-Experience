@@ -1,0 +1,140 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate()
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .post("http://localhost:3001/register", { name, email, password })
+      .then((result) => {
+        console.log("✅ Registered:", result.data);
+        setSuccess(true);
+        setName("");
+        setEmail("");
+        setPassword("");
+        navigate('/login')
+      })
+      .catch((err) => {
+        console.error("❌ Error:", err);
+      });
+  };
+
+  return (
+    <div
+      className="d-flex align-items-center justify-content-center vh-100"
+      style={{
+        background: "linear-gradient(135deg, #d9f8f0ff 0%, #dbeafe 100%)",
+      }}
+    >
+      <div
+        className="card shadow-lg border-0"
+        style={{
+          width: "850px",
+          borderRadius: "20px",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {/* Left side (Form) */}
+        <div className="p-5 flex-grow-1" style={{ flex: 1.2 }}>
+          <h3 className="text-primary fw-bold mb-4">Sign Up</h3>
+
+          {success && (
+            <div className="alert alert-success py-2">
+              ✅ Form submitted successfully!
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Full Name</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setSuccess(false);
+                }}
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Email Address</label>
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setSuccess(false);
+                }}
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setSuccess(false);
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-100 mt-3"
+              style={{
+                borderRadius: "10px",
+                fontWeight: "600",
+              }}
+            >
+              Sign Up
+            </button>
+          </form>
+
+          <div className="text-center mt-3">
+            <small className="text-muted">
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary fw-semibold">
+                Login here
+              </Link>
+            </small>
+          </div>
+        </div>
+
+        {/* Right side (Image) */}
+        <div
+          className="d-none d-md-block"
+          style={{
+            flex: 1,
+            backgroundImage:
+              "url('https://images.pexels.com/photos/4061662/pexels-photo-4061662.jpeg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
