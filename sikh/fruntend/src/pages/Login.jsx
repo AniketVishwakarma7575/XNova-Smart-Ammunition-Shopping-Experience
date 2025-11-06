@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import API from '../api/api';
 import { motion } from 'framer-motion';
 
+
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,80 +13,84 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     try {
       const res = await API.post('/auth/login', { email, password });
+
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       setUser(res.data.user);
-      navigate('/');
+
+      if (res.data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+
     } catch (err) {
       alert(err?.response?.data?.message || 'Login failed');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-white to-gray-100 relative overflow-hidden">
-      {/* Nike Background Logo */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 2 }}
-        className="absolute inset-0 flex items-center justify-center"
-      >
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* 🔹 Full Background Image */}
+      <div className="absolute inset-0">
         <img
-          src="/nike-logo.png"
-          alt="Nike"
-          className="w-80 opacity-5 select-none"
+          src="https://images.pexels.com/photos/2449600/pexels-photo-2449600.png"
+          alt="Background"
+          className="w-full h-full object-cover brightness-100 contrast-105"
         />
-      </motion.div>
+        {/* Light gradient overlay (instead of dark) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/40"></div>
+      </div>
 
-      {/* Login Card */}
+      {/* 🔹 Login Card */}
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="relative z-10 bg-white/90 backdrop-blur-lg shadow-2xl rounded-2xl p-8 w-full max-w-md"
+        className="relative z-10 bg-white/80 shadow-xl backdrop-blur-md rounded-2xl p-8 w-full max-w-md mx-4 border border-white/50"
       >
-        <h2 className="text-3xl font-extrabold text-center text-black mb-6">
+        <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6">
           Welcome Back 👋
         </h2>
 
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} className="space-y-5">
           <div>
-            <label className="block text-gray-600 text-sm mb-1">Email</label>
+            <label className="block text-gray-700 text-sm mb-2">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@gmail.com"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-600 text-sm mb-1">Password</label>
+            <label className="block text-gray-700 text-sm mb-2">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="********"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition duration-300"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
           >
             Login
           </button>
         </form>
 
-        <p className="text-center text-gray-600 text-sm mt-4">
+        <p className="text-center text-gray-700 text-sm mt-4">
           Don’t have an account?{' '}
           <span
             onClick={() => navigate('/register')}
-            className="text-black font-semibold cursor-pointer hover:underline"
+            className="text-blue-600 font-semibold cursor-pointer hover:underline"
           >
             Register
           </span>
